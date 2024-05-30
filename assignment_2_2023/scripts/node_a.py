@@ -30,7 +30,8 @@ from assignment_2_2023.msg import RobotState, PlanningFeedback
 from geometry_msgs.msg import Twist, Point, Pose
 from actionlib_msgs.msg import GoalStatus
 from nav_msgs.msg import Odometry
-
+import ipywidgets as widgets
+from IPython.display import display
 
 
 def send_goal(client, x, y):
@@ -113,11 +114,11 @@ def main ():
     rospy.init_node('robot_controller')
 
     # Create the SimpleActionClient, passing the type of the action to the constructor.
-    client = actionlib.SimpleActionClient('/reaching_goal',assignment_2_2023.msg.PlanningAction)
+    #client = actionlib.SimpleActionClient('/reaching_goal',assignment_2_2023.msg.PlanningAction)
     """ instance of the SimpleActionClient class that will be used to send goals to the action server.
     """
     # Waits until the action server has started up and started listening for goals.
-    client.wait_for_server()
+    #client.wait_for_server()
 
     # publisher to the Robot_State custom message 
     robot_state_pub = rospy.Publisher('/Robot_state', RobotState, queue_size=10)
@@ -125,7 +126,7 @@ def main ():
     """
 
     # subscriber to the odometry topic
-    odom_sub = rospy.Subscriber('/odom', Odometry, odom_callback, robot_state_pub, queue_size=1)
+        odom_sub = rospy.Subscriber('/odom', Odometry, odom_callback, robot_state_pub, queue_size=1)
     """ instance of the Subscriber class that will be used to subscribe to the odometry topic and get the robot's position and velocity information.
     """
 
@@ -134,44 +135,13 @@ def main ():
         rospy.sleep(1)
 
         #set a goal
-        print ("Set a goal !")
+        #print ("Set a goal !")
 
-        x = float(input("Enter the x coordinate: "))
-        y = float(input("Enter the y coordinate: "))
+        #x = float(input("Enter the x coordinate: "))
+        #y = float(input("Enter the y coordinate: "))
 
-        send_goal(client, x, y)
-        
-        while not rospy.is_shutdown():
-
-            rospy.sleep(1)
-            #check the status of the goal
-            goal_status = client.get_state()
-
-            # if goal status is active 
-            if goal_status == GoalStatus.ACTIVE:
-                print("Goal status update : active.")
-                # ask the user if they would like to cancel the goal
-                cancel_goal = input("press'c'to cancel the goal\npress's'for robot status update : ")
-
-                if cancel_goal == 'c':
-                   print("Cancelling the goal")
-                   goal_cancel_(client)
-                   break
-                  
-                elif cancel_goal == 's':
-                    continue
-                
-                else :
-                    print("Invalid input")
-                    continue 
-
-            # if goal status is succeeded
-            elif goal_status == GoalStatus.SUCCEEDED:
-                print("Goal status update : succeeded.")
-                break
-
-    
-
+        #send_goal(client, x, y)
+      
 if __name__ == '__main__':
     try:
         main()
